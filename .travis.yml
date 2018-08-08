@@ -1,5 +1,5 @@
 os: osx
-language: c
+language: haskell
 
 install:
   - mkdir bin
@@ -9,3 +9,4 @@ install:
 
 script:
   - sh Make.sh --gf=./bin/gf --dest=./rgl
+  - runghc Make.hs build --gf=./bin/gf --dest=./rgl
