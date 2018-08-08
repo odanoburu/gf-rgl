@@ -8,7 +8,8 @@ install:
   - brew install ghc
   - curl http://www.grammaticalframework.org/download/gf-3.9-bin-intel-mac.tar.gz > gf.tar.gz
   - tar -C bin -zxf gf.tar.gz
+  - ls bin
 
 script:
   - sh Make.sh --gf=./bin/gf --dest=./rgl
-  - runghc Make.hs build --gf=./bin/gf --dest=./rgl
+  - runghc Make.hs build --gf=bin/gf --dest=rgl
