@@ -4,11 +4,12 @@ language: generic
 install:
   - mkdir gf
   - mkdir rgl
+  - echo '--no-alpn' > ~/.curlrc
+  - export HOMEBREW_CURLRC=1
   - brew update
   - brew install ghc
   - curl http://www.grammaticalframework.org/download/gf-3.9-bin-intel-mac.tar.gz > gf.tar.gz
   - tar -C gf -zxf gf.tar.gz
-  - ls gf/bin
 
 script:
   - sh Make.sh --gf=./gf/bin/gf --dest=./rgl
