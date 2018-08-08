@@ -1,0 +1,10 @@
+sudo: required
+dist: trusty
+language: c
+
+install:
+  - curl http://www.grammaticalframework.org/download/gf_3.9-1_amd64.deb
+  - sudo dpkg -i gf_3.9-1_amd64.deb
+
+script:
+  - sh Make.sh
