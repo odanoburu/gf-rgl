@@ -20,7 +20,11 @@ The install scripts will try to determine where to copy the compiled RGL modules
 It will look for, in this order:
 - the `--dest=` flag (see below)
 - the `GF_LIB_PATH` environment variable
-- the file `../gf-core/DATA_DIR` (relative to this directory). This only works if you have the `gf-core` and `gf-rgl` repositories in the same top-level directory **and** you have already compiled GF from source.
+- the file `../gf-core/DATA_DIR` (relative to this directory). This
+  only works if you have the `gf-core` and `gf-rgl` repositories in
+  the same top-level directory **and** you have already compiled GF
+  from source.
+
 (This is considered a bit hacky and will probably disappear in the future).
 
 ## Language config
@@ -81,7 +85,9 @@ clean
 `lang`,
 `api`,
 `compat`,
-or an explicit module name (e.g. `ExtraEng.gf`. You don't need to specify to language subdirectory, but there is a restriction that the module must exist in a **direct** subdirectory of `src`).
+or an explicit module name (e.g. `ExtraEng.gf`. You don't need to
+specify to language subdirectory, but there is a restriction that the
+module must exist in a **direct** subdirectory of `src`).
 - `MODE` is one of:
 `present`,
 `alltenses`
@@ -91,7 +97,9 @@ or an explicit module name (e.g. `ExtraEng.gf`. You don't need to specify to lan
 - You can _add_ languages to the default list with `--langs=+...`
 - You can _remove_ languages from the default list with `langs=-...`
 - The path to GF installed on your system can be specified via the `--gf` flag (default is that the `gf` executable is in the global system path).
-- The `--dest` flag can be used to manually specify where the compiled RGL modules should be copied/installed. This is the same place as `GF_LIB_PATH`.
+- The `--dest` flag can be used to manually specify where the compiled
+  RGL modules should be copied/installed. This is the same place as
+  `GF_LIB_PATH`.
 
 ## Shell script: `Make.sh`
 
@@ -112,7 +120,9 @@ This method is provided as an alternative for Windows users who don't have Haske
 It is supposed to be a port of Make.sh and works in largely the same way.
 In particular, it accepts the same flags (in the same format) as described above.
 
-However it currently tries to build all modules for all languages and doesn't consider the details of which modules should be compiled for each language (specified in `languages.csv`)
+However it currently tries to build all modules for all languages and
+doesn't consider the details of which modules should be compiled for
+each language (specified in `languages.csv`)
 
 ## About this repository
 
