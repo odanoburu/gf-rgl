@@ -1,10 +1,10 @@
-sudo: required
-dist: trusty
+os: osx
 language: c
 
 install:
-  - curl http://www.grammaticalframework.org/download/gf_3.9-1_amd64.deb > gf.deb
-  - sudo dpkg -i gf.deb
+  - mkdir bin
+  - curl http://www.grammaticalframework.org/download/gf-3.9-bin-intel-mac.tar.gz > gf.tar.gz
+  - tar -C bin -zxf gf.tar.gz
 
 script:
-  - sh Make.sh
+  - sh Make.sh --gf=./bin/gf
