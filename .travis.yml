@@ -11,7 +11,7 @@ install:
   - brew install ghc
   - curl http://www.grammaticalframework.org/download/gf-3.9-bin-intel-mac.tar.gz > gf.tar.gz
   - tar -C ~/.local/ -zxf gf.tar.gz
-  - ls ~/.local/
+  - ls ~/.local/bin
 
 script:
   - sh Make.sh --gf=~/.local/bin/gf --dest=./rgl
