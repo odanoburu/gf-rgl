@@ -4,7 +4,7 @@ sudo: false
 
 install:
   - mkdir rgl
-  - mkdir -p ~/.local/
+  - mkdir ~/.local/
   - echo '--no-alpn' > ~/.curlrc
   - export HOMEBREW_CURLRC=1
   - brew update
