@@ -3,6 +3,8 @@ language: generic
 sudo: false
 
 install:
+  - pwd
+  - exit 1
   - mkdir rgl
   - mkdir ~/.local/
   - echo '--no-alpn' > ~/.curlrc
@@ -11,7 +13,6 @@ install:
   - brew install ghc
   - curl http://www.grammaticalframework.org/download/gf-3.9-bin-intel-mac.tar.gz > gf.tar.gz
   - tar -C ~/.local/ -zxf gf.tar.gz
-  - ls ~/.local/bin
 
 script:
   - sh Make.sh --gf=~/.local/bin/gf --dest=./rgl
