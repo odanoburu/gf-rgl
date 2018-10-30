@@ -20,5 +20,5 @@ before_install:
 #  - export GF_LIB_PATH=/home/rgl ;
 
 script:
-  - runghc Make.hs build prelude all --verbose --gf=gf-bin/bin/gf
+  - runhaskell Make.hs build prelude all --verbose --gf=gf-bin/bin/gf
   - bash Make.sh --dest=rgl --verbose --gf=gf-bin/bin/gf
