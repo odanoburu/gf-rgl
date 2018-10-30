@@ -11,14 +11,14 @@ addons:
       - ghc
 
 before_install:
+  - mkdir rgl && mkdir gf-bin
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install ghc@8.2 ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl http://www.grammaticalframework.org/download/gf-3.9-bin-intel-mac.tar.gz > gf.tar.gz && tar -zxf gf.tar.gz && rm gf.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl http://www.grammaticalframework.org/download/gf-3.9-bin-intel-mac.tar.gz > gf.tar.gz && tar -C gf-bin -zxf gf.tar.gz && rm gf.tar.gz; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then curl http://www.grammaticalframework.org/download/gf_3.9-1_amd64.deb > gf.deb && sudo dpkg -i gf.deb && rm gf.deb ; fi
-  - mkdir rgl
+  - ls gf-bin
   - ls
-  - ls gf
 #  - export GF_LIB_PATH=/home/rgl ;
 
 script:
-  - runghc Make.hs build prelude all --verbose --gf=gf/bin/gf
-  - bash Make.sh --dest=rgl --verbose --gf=gf/bin/gf
+  - runghc Make.hs build prelude all --verbose --gf=gf-bin/bin/gf
+  - bash Make.sh --dest=rgl --verbose --gf=gf-bin/bin/gf
