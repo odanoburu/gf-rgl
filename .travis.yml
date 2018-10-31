@@ -23,6 +23,6 @@ before_install:
 
 
 script:
-  - runghc Make.hs build prelude all --verbose && rm -r dist && mkdir dist
-  - bash Make.sh --dest=dist --verbose && rm -r dist && mkdir dist
+  - runghc Make.hs build prelude all --verbose && rm -r dist
+  - bash Make.sh --dest=dist --verbose && rm -r dist
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then ./Make.bat --dest=dist --verbose ; fi
