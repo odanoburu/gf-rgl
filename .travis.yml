@@ -21,6 +21,6 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then alias gf='gf.exe' && alias runghc='runghc.exe' ; fi
 
 script:
-  - runghc Make.hs build prelude all --verbose ; rm -rvf dist
-  - bash Make.sh --dest=dist-bash --verbose ; rm -fvr dist
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then ./Make.bat --dest=dist-win --verbose ; fi
+  - runghc Make.hs build prelude all --verbose ; rm -rf dist
+  - bash Make.sh --verbose ; rm -fr dist
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then ./Make.bat --verbose ; fi
