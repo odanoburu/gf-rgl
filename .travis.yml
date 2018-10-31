@@ -22,5 +22,5 @@ before_install:
 
 script:
   - runghc Make.hs build prelude all --verbose ; rm -rf dist
-  - bash Make.sh --verbose ; rm -fr dist
+  - bash Make.sh --verbose ; rm -rf dist
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then ./Make.bat --verbose ; fi
