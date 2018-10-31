@@ -17,8 +17,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl http://www.grammaticalframework.org/download/gf-3.9-bin-intel-mac.tar.gz > gf.tar.gz && sudo tar --no-same-owner --no-same-permissions -C /usr/local -zxf gf.tar.gz && rm gf.tar.gz; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then curl http://www.grammaticalframework.org/download/gf_3.9.1-1_amd64-trusty.deb > gf.deb && sudo dpkg -i gf.deb && rm gf.deb ; fi
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install ghc --version=8.4.4 ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then curl http://www.grammaticalframework.org/download/gf-3.9-bin-windows.zip > gf.zip && unzip gf.zip && rm gf.zip ; fi
-  - pwd
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then curl http://www.grammaticalframework.org/download/gf-3.9-bin-windows.zip > gf.zip && unzip gf.zip && rm gf.zip && export PATH="/c/Users/travis/build/odanoburu/gf-rgl/gf-3.9/bin/"; fi
 
 script:
   - runghc Make.hs build prelude all --verbose
