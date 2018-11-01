@@ -99,4 +99,4 @@ for %%m in (%modules%) do (
 
 REM Copy
 echo Copying to %dest%
-xcopy %dist% %dest% /d
+copy %dist% %dest%
