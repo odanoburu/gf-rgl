@@ -13,6 +13,7 @@ addons:
       - ghc
 
 before_install:
+  - echo $TRAVIS_BUILD_DIR
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install ghc@8.2 && export PATH="/usr/local/opt/ghc@8.2/bin:$PATH" ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl http://www.grammaticalframework.org/download/gf-3.9-bin-intel-mac.tar.gz > gf.tar.gz && sudo tar --no-same-owner --no-same-permissions -C /usr/local -zxf gf.tar.gz && rm gf.tar.gz; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then curl http://www.grammaticalframework.org/download/gf_3.9.1-1_amd64-trusty.deb > gf.deb && sudo dpkg -i gf.deb && rm gf.deb ; fi
@@ -21,6 +22,6 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then alias gf='gf.exe' && alias runghc='runghc.exe' ; fi
 
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then GF_LIB_PATH="\c\Users\travis\build\odanoburu\gf-rgl\dist-bat" cmd //c Make.bat --verbose ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then GF_LIB_PATH="/c/Users/travis/build/odanoburu/gf-rgl/dist-bat" cmd //c Make.bat --verbose ; fi
 #  - runghc Make.hs build prelude all --verbose ; rm -rf dist
 #  - bash Make.sh --dest=dist-bash --verbose ; rm -rf dist
