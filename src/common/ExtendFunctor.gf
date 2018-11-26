@@ -44,6 +44,7 @@ lin
   FocusAdv = variants {} ;     -- Adv -> S -> Utt ; -- today I will sleep
   FocusAdV = variants {} ;     -- AdV -> S -> Utt ; -- never will I sleep
   FocusAP = variants {} ;     -- AP -> NP -> Utt ; -- green was the tree
+  PresPartAP = variants {} ;    -- VP -> AP ; -- (the man) looking at Mary
   EmbedPresPart = variants {} ;     -- VP -> SC ; -- looking at Mary (is fun)
   PassVPSlash = variants {} ;     -- VPSlash -> VP ; -- be forced to sleep
   PassAgentVPSlash = variants {} ;     -- VPSlash -> NP -> VP ; -- be begged by her to go
@@ -75,8 +76,7 @@ lin
   Cons_rr_RNP = variants {} ;     -- RNP -> RNPList -> RNPList ; -- my family, myself, John
   Cons_nr_RNP = variants {} ;     -- NP -> RNPList -> RNPList ; -- John, my family, myself
   ComplGenVV = variants {} ;     -- VV -> Ant -> Pol -> VP -> VP ; -- want not to have slept
-  ComplSlashPartLast = ComplSlash ;
-  SlashV2V = variants {} ;     -- V2V -> Ant -> Pol -> VPS -> VPSlash ; -- force (her) not to have slept
+  --SlashV2V = variants {} ;     -- V2V -> Ant -> Pol -> VPS -> VPSlash ; -- force (her) not to have slept
   CompoundN = variants {} ;     -- N -> N -> N ; -- control system / controls system / control-system
   CompoundAP = variants {} ;     -- N -> A -> AP ; -- language independent / language-independent
   GerundCN = variants {} ;     -- VP -> CN ; -- publishing of the document (can get a determiner)
@@ -93,6 +93,10 @@ lin
   CompQS = variants {} ;     -- QS -> Comp ; -- (the question is) who sleeps
   CompVP = variants {} ;     -- Ant -> Pol -> VP -> Comp ; -- (she is) to go
 
+  UncontractedNeg = variants {} ;
+  UttVPShort = variants {} ;
+  ComplSlashPartLast = ComplSlash ;
+  
   DetNPMasc = DetNP ;
   DetNPFem = DetNP ;
 
