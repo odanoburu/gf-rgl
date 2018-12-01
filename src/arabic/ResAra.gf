@@ -111,7 +111,8 @@ resource ResAra = PatternsAra ** open  Prelude, Predef, OrthoAra, ParamX  in {
     NTable = Number => State => Case => Str;
     emptyNTable : NTable = \\n,s,c => [] ;
 
-    Preposition : Type = {s : Str ; c : Case} ;
+    Preposition : Type = {s : Str ; c : Case ; binds : Bool} ;
+
     Noun : Type = {
       s,s2 : NTable ;
       g : Gender ;
@@ -122,17 +123,22 @@ resource ResAra = PatternsAra ** open  Prelude, Predef, OrthoAra, ParamX  in {
     Noun3 : Type = Noun2 ** {c3 : Preposition} ;
 
     mkPreposition = overload {
-      mkPreposition : Str -> Case -> Preposition = \s,c -> {s=s;c=c} ;
-      mkPreposition : Str -> Preposition = \s -> {s=s;c=Gen} ;
-    } ;
+      mkPreposition : Str -> Case -> Preposition = \s,c -> {s=s; c=c; binds=False} ;
+      mkPreposition : Str -> Preposition = \s -> {s=s; c=Gen; binds=False} ;
+      } ;
+
+    mkPrefix = overload {
+      mkPrefix : Str -> Preposition = \s -> {s=s; c=Gen; binds=True} ;
+      mkPrefix : Str -> Case -> Preposition = \s,c -> {s=s; c=c; binds=True}
+      } ;
 
     noPrep : Preposition = mkPreposition [] Nom ;
-    liPrep : Preposition = mkPreposition (
+    liPrep : Preposition = mkPrefix (
       pre { #pronSuffAndOther => "لِ" ;
             #pronSuff         => "لَ" ;
             _                 => "لِ" 
-          }  ++ BIND) Dat ;
-    biPrep : Preposition = mkPreposition ("بِ"++BIND) ;
+          }) Dat ;
+    biPrep : Preposition = mkPrefix "بِ" ;
 
     pronSuff : pattern Str = #("كَ"|"كِ"|"كُمَا"|"كُمْ"|"كُنَّ"|"هُ"|"ها"|"هُمَا"|"هُمْ"|"هُنَّ") ;
     pronSuffAndOther : pattern Str = #( "كَم" ) ; -- TODO list words that begin like pron.suff. but aren't
@@ -143,6 +149,16 @@ resource ResAra = PatternsAra ** open  Prelude, Predef, OrthoAra, ParamX  in {
     Verb : Type = {s : VForm => Str} ;
     Verb2 : Type = Verb ** {c2 : Preposition} ;
     Verb3 : Type = Verb2 ** {c3 : Preposition} ;
+
+    -- Sometimes a verb is only used in one form (per3 masc sg);
+    -- ideally, one would use an impersonal syntactic construction,
+    -- less ideally, hardcode the verb to only contain forms of one person.
+    forcePerson : PerGenNum -> Verb -> Verb = \pgn,verb -> verb ** {
+      s = \\vf => case vf of {
+                   VPerf   v _ => verb.s ! VPerf v pgn ;
+                   VImpf m v _ => verb.s ! VImpf m v pgn ;
+                   _           => verb.s ! vf }
+      } ;
 
     AP : Type = {s : Species => Gender => NTable } ;
     uttAP : AP -> (Gender => Str) ;
@@ -1370,6 +1386,17 @@ patHollowImp : (_,_ :Str) -> Gender => Number => Str =\xaf,xAf ->
 
     agrNP : Agr -> NP = \agr -> emptyNP ** {a = agr} ;
 
+    -- e.g. al-jamii3, 2a7ad
+    regNP : Str -> Number -> State -> NP = \word,n,s -> 
+      agrNP {pgn = Per3 Masc n ; isPron = False} ** {
+        s = \\c => fixShd word (dec1sg ! s ! c) ;
+        } ;
+
+    -- e.g. hadha, dhaalika
+    indeclNP : Str -> Number -> NP = \word,n -> emptyNP ** {
+      s = \\c => word
+      } ;
+
     i_Pron  : NP = mkPron "أَنَا" "نِي" "ي" (Per1 Sing) ;
     we_Pron : NP = mkPron "نَحنُ" "نا" "نا" (Per1 Plur) ;
 
@@ -1534,9 +1561,13 @@ patHollowImp : (_,_ :Str) -> Gender => Number => Str =\xaf,xAf ->
                 <Verbal, False> => verbalAgr np.a.pgn;
                 _               => np.a.pgn
               };
-            sc : Preposition = case o of { -- very unsure of this /IL
-                  Subord => {s=[]; c=Acc} ; -- to prevent weird stuff with VVs
-                  _ => case np.a.isPron of {True => noPrep; _ => vp.sc} 
+
+            -- very unsure about this /IL
+            sc : Preposition = case o of { 
+                  Subord => {s=[]; c=Acc; binds=False} ;
+                  _ => case np.a.isPron of {
+                         True => noPrep ; -- to prevent weird stuff with VVs, might be overly specific
+                         _    => vp.sc } 
                 } ;
             subj = np.empty ++ sc.s
                 ++ case vp.isPred of {
@@ -1545,10 +1576,8 @@ patHollowImp : (_,_ :Str) -> Gender => Number => Str =\xaf,xAf ->
                    } ;
           } in wordOrder o
                   vp.obj.a.isPron np.a.isPron
-                  (vStr vp pgn t p) 
-                  (case <vp.isPred,vp.obj.a.isPron> of {
-                     <False,True> => BIND ++ vp.obj.s ;
-                     _            =>         vp.obj.s })
+                  (vStr vp pgn t p o)
+                  vp.obj.s
                   (pred vp pgn t p) 
                   vp.s2
                   subj
@@ -1583,21 +1612,29 @@ patHollowImp : (_,_ :Str) -> Gender => Number => Str =\xaf,xAf ->
             _                 => vp.pred.s ! gn ! Acc --xabar kaana wa laysa manSoob
           } ;
 
-    vStr : VP -> PerGenNum -> ParamX.Tense -> Polarity -> Str = \vp,pgn,tn,pl -> 
+    vStr : VP -> PerGenNum -> ParamX.Tense -> Polarity -> Order -> Str = \vp,pgn,tn,pl,o -> 
       let kataba  = vp.s ! pgn ! VPPerf ;
           yaktubu = vp.s ! pgn ! VPImpf Ind ;
           yaktuba = vp.s ! pgn ! VPImpf Cnj ;
           yaktub  = vp.s ! pgn ! VPImpf Jus ;
-       in case <vp.isPred,tn,pl> of {
-            <False, Pres, Pos> => yaktubu ;
-            <False, Pres, Neg> => "لَا" ++ yaktubu ;
-            <True, Pres, Pos> => "" ;      --no verb "to be" in present
-            <True, Pres, Neg> => "لَيسَ" ;--same here, just add negation particle
-            <_, Past, Pos> => kataba ;
-            <_, Past, Neg> => "لَمْ" ++ yaktub ;
-            <_, Cond, _  > => yaktuba ;
-            <_, Fut,  Pos> => glue "سَ" yaktubu ;
-            <_, Fut,  Neg> => "لَنْ" ++ yaktuba
+          -- Various negative particles
+          la    = "لَا" ;
+          laysa = "لَيسَ" ;  -- "neg. copula"
+          lam   = "لَمْ" ;   -- neg. past
+          alla  = "أَلَّا" ; -- neg. subjunctive
+          lan   = "لَنْ" ;   -- neg. future
+       in case <vp.isPred,tn,pl,o> of {
+            <False, Pres, Pos, _> => yaktubu ;
+            <False, Pres, Neg, _> => la ++ yaktubu ;
+            <True, Pres, Pos, _> => [] ;    --no verb "to be" in present
+            <True, Pres, Neg, _> => laysa ; --same here, just add negation particle
+            <_, Past, Pos, _> => kataba ;
+            <_, Past, Neg, _> => lam ++ yaktub ;
+            <_, Cond, Pos, _> => yaktuba ;
+            <_, Cond, Neg, _> => alla ++ yaktuba ;
+            <_, Fut,  Pos, _> => glue "سَ" yaktubu ;
+            <_, Fut,  Neg, Subord> => alla ++ yaktuba ; -- might be too specific for just one case /IL
+            <_, Fut,  Neg, _> => lan ++ yaktuba
           } ;
 
     -- in verbal sentences, the verb agrees with the subject
@@ -1626,11 +1663,20 @@ patHollowImp : (_,_ :Str) -> Gender => Number => Str =\xaf,xAf ->
     subj2np : Subj -> NP = \su -> su ** {a = {pgn = emptyNP.a.pgn ; isPron = su.isPron} ; empty=[]} ;
     emptyObj : Obj = emptyNP ** {s=[]} ;
 
-    insertObj : NP -> VPSlash -> VP = \np,vp -> vp **
-      { obj = {s = vp.obj.s -- old object, if there was one
-                ++ vp.c2.s ++ np.s ! vp.c2.c -- new object
-                ++ vp.agrObj ! np.a.pgn ; -- only used for SlashV2V
-               a = np.a} };
+    insertObj : NP -> VPSlash -> VP = \np,vp -> vp ** { 
+      obj = {s = vp.obj.s -- old object, if there was one
+              ++ bindIfPron np vp -- new object, bind if pronoun and not pred
+              ++ vp.agrObj ! np.a.pgn ; -- only used for SlashV2V
+             a = np.a} 
+      } ;
+
+    bindIf : Bool -> Str = \b -> if_then_Str b BIND [] ;
+
+    bindIfPron : NP -> {c2:Preposition; isPred:Bool} -> Str = \np,vp ->
+      let bind = case vp.isPred of {
+                   False => bindIf (orB np.a.isPron vp.c2.binds) ;
+                   True  => [] }
+       in vp.c2.s ++ bind ++ np.s ! vp.c2.c ;
 
     insertPred : Comp -> VP -> VP = \p,vp -> vp **
       { pred = p;
@@ -1650,6 +1696,10 @@ patHollowImp : (_,_ :Str) -> Gender => Number => Str =\xaf,xAf ->
 
     VPSlash : Type = VP ** {c2 : Preposition ; agrObj : PerGenNum => Str} ;
     ClSlash : Type = VPSlash ** {subj : Subj} ;
+
+    emptyVPslash : VP -> VPSlash = \vp -> vp ** {
+      c2 = noPrep ; agrObj = \\_ => []
+      } ;
 
     slashV2 : Verb2 -> VPSlash = \v ->
       predV v ** {c2 = v.c2 ; agrObj = \\_ => []} ;
@@ -1672,6 +1722,7 @@ patHollowImp : (_,_ :Str) -> Gender => Number => Str =\xaf,xAf ->
     Cl  : Type = {s : Tense => Polarity => Order => Str} ;
     QCl : Type = {s : Tense => Polarity => QForm => Str} ;
 
+    -- To override the default order; forces all orders in a Cl to be the chosen order.
     forceOrder : Order -> Cl -> Cl = \o,cl ->
       {s = \\t,p,_ => cl.s ! t ! p ! o} ;
 

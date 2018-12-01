@@ -145,6 +145,8 @@ resource ParadigmsAra = open
 
   degrA : (posit,compar,plur : Str) -> A ;
 
+  irregFemA : (masc : A) -> (fem : A) -> A ; -- adjective with irregular feminine. Takes two adjectives (masc. "regular" and fem. "regular") and puts them together.
+
 --Takes a root string and a pattern string
   sndA : (root,patt : Str) -> Adj ;
 
@@ -303,8 +305,8 @@ resource ParadigmsAra = open
 -- Prepositions are used in many-argument functions for rection.
 
   Preposition = ResAra.Preposition ;
-  noPrep = {s=[]; c=nom} ;
-  casePrep c = {s=[]; c=c} ;
+  noPrep = {s=[]; c=nom; binds=False} ;
+  casePrep c = {s=[]; c=c; binds=False} ;
 
   Gender = ResAra.Gender ;
   masc = ResAra.Masc ;
@@ -362,10 +364,9 @@ resource ParadigmsAra = open
 
   attrN : Number -> N -> N -> N = \num,n1,n2 -> n1 ** {
     s  = \\n,_,c => n1.s ! n ! Const ! c ;
-    s2 = \\n,s,c => let c' = case c of {Dat => Gen; _ => c} in -- the Dat with liPrep hack only applies to the first word
-                    n1.s2 ! num ! s ! c' -- attribute doesn't change
-                 ++ n2.s  ! num ! s ! c'
-                 ++ n2.s2 ! num ! s ! c'} ;
+    s2 = \\n,s,_ => n1.s2 ! num ! s ! Gen -- attribute doesn't change
+                 ++ n2.s  ! num ! s ! Gen
+                 ++ n2.s2 ! num ! s ! Gen} ;
 
   dualN : N -> N = \n -> n ** {isDual=True} ;
 
@@ -570,15 +571,6 @@ resource ParadigmsAra = open
 
   proDrop : NP -> NP = \np -> lin NP (ResAra.proDrop np) ;
 
-  -- e.g. al-jamii3, 2a7ad
-  regNP : Str -> Number -> NP = \word,n -> lin NP (emptyNP ** {
-    s = \\c => fixShd word (dec1sg ! Def ! c)
-    });
-
-  -- e.g. hadha, dhaalika
-  indeclNP : Str -> Number -> NP = \word,n -> lin NP (emptyNP ** {
-    s = \\c => word
-    });
 
   mkQuant7 : (_,_,_,_,_,_,_ : Str) -> State -> Quant =
     \hava,havihi,havAn,havayn,hAtAn,hAtayn,hA'ulA,det -> lin Quant (baseQuant **
@@ -624,6 +616,8 @@ resource ParadigmsAra = open
   degrA : (posit,compar,plur : Str) -> A
     = \posit,compar,plur -> lin A {s = clr posit compar plur} ;
 
+
+
   sndA root pat =
     let  raw = sndA' root pat in {
       s = \\af =>
@@ -643,6 +637,13 @@ resource ParadigmsAra = open
         AComp d c => indeclN akbar ! d ! c
         }
     };
+
+  irregFemA : (masc : A) -> (fem : A) -> A = \m,f -> m ** {
+    s = table {
+      APosit Masc n d c => m.s ! APosit Masc n d c ;
+      APosit Fem  n d c => f.s ! APosit Masc n d c ; -- The fem. adjective is built as if the irregular fem. forms were Masc. This is on purpose.
+      x => m.s ! x }
+    } ;
 
   nisbaA : Str -> Adj = \Haal ->
     let Haaliyy = Haal + "ِيّ" in {
