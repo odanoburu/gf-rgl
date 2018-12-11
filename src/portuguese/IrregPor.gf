@@ -6,4 +6,4 @@ concrete IrregPor of IrregPorAbs = CatPor **
 flags optimize=values ;
     coding=utf8 ;
 
-}
+} ;
