@@ -60,7 +60,7 @@ concrete StructuralPor of Structural = CatPor **
     behind_Prep = {s = "atrás" ; c = MorphoPor.genitive ;
                    isDir = False} ;
     between_Prep = mkPrep "entre" ;
-    both7and_DConj = {s1,s2 = etConj.s ; n = Pl} ;
+    both7and_DConj = {s1 = "tanto" ; s2 = "quanto" ; n = Pl} ;
     but_PConj = ss "mas" ;
     by8agent_Prep = mkPrep [] ablative ; -- por
     by8means_Prep = mkPrep [] ablative ; -- por
@@ -70,7 +70,7 @@ concrete StructuralPor of Structural = CatPor **
     either7or_DConj = {s1,s2 = "ou" ; n = Sg} ;
     everybody_NP = makeNP ["todos"] Masc Pl ;
     every_Det = mkDeterminer "cada" "cada" Sg False ;
-    everything_NP = pn2np (mkPN ["todo"] Masc) ;
+    everything_NP = pn2np (mkPN ["tudo"] Masc) ;
     everywhere_Adv = ss ["em toda parte"] ;
     except_Prep = mkPrep "exceto" ;
     few_Det = mkDeterminer "poucos" "poucas" Pl False ;
@@ -98,12 +98,12 @@ concrete StructuralPor of Structural = CatPor **
     must_VV = mkVV (regV "dever") ;
     no_Quant =
       let
-        ningun : ParadigmsPor.Number => ParadigmsPor.Gender => Case => Str = table {
-          _ => \\g,c => prepCase c ++ genForms "nenhum" "nenhuma" ! g
-          }
+        nenhum : ParadigmsPor.Number => ParadigmsPor.Gender => Case => Str =
+          -- https://web.archive.org/web/20181003161105/http://sualingua.com.br/2009/05/08/nenhuns/
+         \\n,g,c => prepCase c ++ genNumForms "nenhum" "nenhuma" "nenhuns" "nenhumas" ! g ! n
       in {
-        s = \\_ => ningun ;
-        sp = ningun ;
+        s = \\_ => nenhum ;
+        sp = nenhum ;
         s2 = [] ; isNeg = True
       } ;
     no_Utt = ss "não" ;
