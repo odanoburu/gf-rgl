@@ -39,7 +39,7 @@ lin
    near_A      = mkA "perto" ;
    new_A       = prefA (mkA "novo") ;
    old_A       = prefA (mkA "velho") ;
-   ready_A     = mkA "pronto" ;
+   ready_A     = adjCopula (mkA "pronto") D.estarCopula ;
    red_A       = mkA "vermelho" ;
    rotten_A    = mkA "podre" ;
    round_A     = mkA "redondo" ;
