@@ -221,5 +221,4 @@ abstract Extend = Cat ** {
   UttAccIP : IP -> Utt ; -- whom (accusative)
   UttDatIP : IP -> Utt ; -- whom (dative)
 
-
 }
