@@ -51,42 +51,19 @@ incomplete concrete SentenceRomance of Sentence =
           vp : ResRomance.VP = case <vps.c2.c, vps.c2.isDir> of {
               <Acc,True> => insertAgr agr0 vps ;    -- la fille qu'il a trouvée is decided here
               _ => vps
-              } ;
-
-{- slow to compile
-          pol : RPolarity = case <isNeg, vp.isNeg, b, d> of {
-            <_,True,RPos,_>    => RNeg True ; 
-            <True,_,RPos,DInv> => RNeg True ; 
-            <True,_,RPos,_>    => polNegDirSubj ;
-            _ => b
             } ;
--} --pol = b ; ----
+
+          v = vp.s ;
 
           neg = vp.neg ! b ;
-
-{- also too slow
-          neg : Str * Str = case b of {
-            RNeg _ => vp.neg ! b ;
-            RPos => case vp.isNeg of {
-              True  => vp.neg ! RNeg True ; 
-              False => case isNeg of {
-                True => case d of {
-                   DInv => vp.neg ! RNeg True ;
-                   _    => vp.neg ! polNegDirSubj
-                   } ;
-                False => vp.neg ! b
-                }
-              }
-            } ;
--}
 
           gen = agr.g ;
           num = agr.n ;
           per = agr.p ;
 
-          vtyp  = vp.s.vtyp ;
-          verb = vp.s.s ;
-          vaux = auxVerb vp.s.vtyp ;
+          vtyp  = v.vtyp ;
+          verb = (useVerb v).s ;
+          vaux = auxVerb vtyp ;
 
           refl  = case isVRefl vtyp of {
             True => reflPron num per Acc ; ---- case ?
@@ -108,10 +85,6 @@ incomplete concrete SentenceRomance of Sentence =
             False => vp.agr.p1 ;
             True => verb ! VPart agr.g agr.n
             } ;
-----          part = case vp.agr of {
-----            VPAgrSubj     => verb ! VPart agr.g agr.n ;
-----            VPAgrClit g n => verb ! VPart g n  
-----            } ;
 
           vpss : Str * Str = case <te,a> of {
 
@@ -128,14 +101,14 @@ incomplete concrete SentenceRomance of Sentence =
             } ;
           fin = vpss.p1 ;
           inf = vpss.p2 ;
-          hypt = verbHyphen vp.s ; -- in French, -t- in some cases, otherwise - ; empty in other langs
+          hypt = verbHyphen v ; -- in French, -t- in some cases, otherwise - ; empty in other langs
         in
 
         case d of {
           DDir => 
             subj ++ neg.p1 ++ clit ++ fin ++ neg.p2 ++ inf ++ compl ++ ext ;
           DInv => 
-            invertedClause vp.s.vtyp <te, a, num, per> hasClit neg hypt clit fin inf compl subj ext
+            invertedClause vtyp <te, a, num, per> hasClit neg hypt clit fin inf compl subj ext
           }
     } ;
 

@@ -1,3 +1,4 @@
+--# -path=.:../romance:../abstract:../common:../prelude
 --1 Portuguese auxiliary operations.
 --
 ---- This module contains operations that are needed to make the

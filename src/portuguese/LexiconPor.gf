@@ -1,4 +1,4 @@
---# -path=.:../romance:../common:../abstract:../../prelude
+--# -path=.:../romance:../common:../abstract:../prelude
 
 concrete LexiconPor of Lexicon = CatPor ** open
   (M=MorphoPor), ParadigmsPor, BeschPor, Prelude, (D = DiffPor), (S = StructuralPor) in {

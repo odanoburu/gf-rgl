@@ -185,7 +185,7 @@ oper
     \isNeg, subj, hasClit, isPol, agr, vp -> {
       s = \\d,te,a,b,m =>
         let
-
+          v = vp.s ;
           pol : RPolarity = case <isNeg, vp.isNeg, b, d> of {
             <_,True,RPos,_>    => RNeg True ;
             <True,_,RPos,DInv> => RNeg True ;
@@ -199,7 +199,7 @@ oper
           num = agr.n ;
           per = agr.p ;
 
-          particle = vp.s.p ;
+          particle = v.p ;
 
           compl = particle ++ case isPol of {
             True => vp.comp ! {g = gen ; n = Sg ; p = per} ;
@@ -207,26 +207,21 @@ oper
             } ;
           ext = vp.ext ! b ;
 
-          vtyp  = vp.s.vtyp ;
+          vtyp  = v.vtyp ;
           refl  = case isVRefl vtyp of {
             True => reflPron num per Acc ; ---- case ?
             _ => []
             } ;
           clit = refl ++ vp.clit1 ++ vp.clit2 ++ vp.clit3.s ; ---- refl first?
 
-          verb = vp.s.s ;
-          vaux = auxVerb vp.s.vtyp ;
+          verb = (useVerb v).s ;
+          vaux = auxVerb vtyp ;
 
 ---- VPAgr : this is where it really matters
           part = case vp.agr.p2 of {
             False => vp.agr.p1 ;
             True => verb ! VPart agr.g agr.n
             } ;
-----          part = case vp.agr of {
-----            VPAgrSubj     => verb ! VPart agr.g agr.n ;
-----            VPAgrClit g n => verb ! VPart g n
-----            } ;
-
 
           vps : Str * Str = case <te,a> of {
             <RPast,Simul> => <verb ! VFin (VImperf m) num per, []> ; --# notpresent
@@ -244,14 +239,14 @@ oper
           fin = vps.p1 ;
           inf = vps.p2 ;
 
-          hypt = verbHyphen vp.s ; -- in French, -t- in some cases, otherwise - ; empty in other langs
+          hypt = verbHyphen v ; -- in French, -t- in some cases, otherwise - ; empty in other langs
 
         in
         case d of {
           DDir =>
             subj ++ neg.p1 ++ clit ++ fin ++ neg.p2 ++ inf ++ compl ++ ext ;
           DInv =>
-            invertedClause vp.s.vtyp <te, a, num, per> hasClit neg hypt clit fin inf compl subj ext
+            invertedClause vtyp <te, a, num, per> hasClit neg hypt clit fin inf compl subj ext
           }
     } ;
 
@@ -265,12 +260,12 @@ oper
 
   nominalVP : (Bool -> VF) -> VP -> Agr -> Str = \vf,vp,agr ->
       let
-        ----iform = orB vp.clit3.hasClit (isVRefl vp.s.vtyp) ;
-        iform = contractInf vp.clit3.hasClit (isVRefl vp.s.vtyp) ;
-        inf   = vp.s.s ! vf iform ;
+        verb  = useVerb vp.s ;
+        iform = contractInf vp.clit3.hasClit (isVRefl verb.vtyp) ;
+        inf   = verb.s ! vf iform ;
         neg   = vp.neg ! RPos ;             --- Neg not in API
-        obj   = vp.s.p ++ vp.comp ! agr ++ vp.ext ! RPos ; ---- pol
-        refl  = case isVRefl vp.s.vtyp of {
+        obj   = verb.p ++ vp.comp ! agr ++ vp.ext ! RPos ; ---- pol
+        refl  = case isVRefl verb.vtyp of {
             True => reflPron agr.n agr.p Acc ; ---- case ?
             _ => []
             } ;

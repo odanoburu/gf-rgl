@@ -178,7 +178,7 @@ concrete ExtendPor of Extend =
   oper
     pastPartAP : VPSlash -> Str -> AP ;
     pastPartAP vps agent = lin AP {
-      s = \\af => vps.comp ! (aform2aagr af ** {p = P3}) ++ vps.s.s ! VPart (aform2gender af) (aform2number af) ++ agent ;
+      s = \\af => vps.comp ! (aform2aagr af ** {p = P3}) ++ (useVerb vps.s).s ! VPart (aform2gender af) (aform2number af) ++ agent ;
       isPre = False ;
       copTyp = serCopula
       } ;
@@ -190,7 +190,7 @@ concrete ExtendPor of Extend =
       vps ** {
         s = auxvp.s ;
         agr = auxvp.agr ;
-        comp  = \\a => vps.comp ! a ++ (let agr = complAgr a in vps.s.s ! VPart agr.g agr.n) ++ agent ;
+        comp  = \\a => vps.comp ! a ++ (let agr = complAgr a in (useVerb vps.s).s ! VPart agr.g agr.n) ++ agent ;
       } ;
 
   lin

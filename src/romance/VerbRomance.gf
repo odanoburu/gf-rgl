@@ -116,7 +116,7 @@ incomplete concrete VerbRomance of Verb =
     AdVVPSlash adv vps = vps ** insertAdV adv.s vps ;
 
     PassV2 v = insertComplement
-      (\\a => let agr = complAgr a in v.s ! VPart agr.g agr.n) (predV auxPassive) ;
+      (\\a => let agr = complAgr a in (useVerb v).s ! VPart agr.g agr.n) (predV auxPassive) ;
 
     VPSlashPrep vp prep = vp ** {
       c2 = {s = prep.s ; c = prep.c ; isDir = False}

@@ -1,4 +1,4 @@
---# -path=.:../romance:../abstract:../common:prelude
+--# -path=.:../romance:../abstract:../common:../prelude
 
 instance DiffPor of DiffRomance - [partAgr,vpAgrSubj,vpAgrClits] = open CommonRomance, PhonoPor, BeschPor, Prelude in {
 
@@ -60,13 +60,14 @@ instance DiffPor of DiffRomance - [partAgr,vpAgrSubj,vpAgrClits] = open CommonRo
         let
           pe    = case b of {True => P3 ; _ => p} ;
           agr   = {g = g ; n = n ; p = pe} ;
-          refl  = case vp.s.vtyp of {
+          v = useVerb vp.s ;
+          refl  = case v.vtyp of {
             VRefl => <reflPron n pe Acc,True> ;
             _ => <[],False>
             } ;
 
           clpr  =  <vp.clit1 ++ vp.clit2, [],vp.clit3.hasClit> ;
-          verb  = vp.s.s ! vImper n pe ;
+          verb  = v.s ! vImper n pe ;
           neg   = vp.neg ! pol ;
           compl = neg.p2 ++ clpr.p2 ++ vp.comp ! agr ++ vp.ext ! pol
       in
@@ -137,7 +138,7 @@ instance DiffPor of DiffRomance - [partAgr,vpAgrSubj,vpAgrClits] = open CommonRo
     possCase = \_,_,c -> prepCase c ;
 
   oper
-    auxVerb : VType -> (VF => Str) = \_ -> haver_V.s ;
+    auxVerb : VType -> (VF => Str) = \_ -> (useVerb haver_V).s ;
 
     negation : RPolarity => (Str * Str) = table {
       RPos => <[],[]> ;

@@ -82,12 +82,12 @@ incomplete concrete ExtraRomance of ExtraRomanceAbs = CatRomance **
 
 oper
     passVPSlash : VPSlash -> Str -> ResRomance.VP = \vps, agent -> 
-      let auxvp = predV auxPassive 
+      let auxvp = predV auxPassive
       in
       vps ** {
          s = auxvp.s ;
          agr = auxvp.agr ;
-         comp  = \\a => vps.comp ! a ++ (let agr = complAgr a in vps.s.s ! VPart agr.g agr.n) ++ agent ;
+         comp  = \\a => vps.comp ! a ++ (let agr = complAgr a in (useVerb vps.s).s ! VPart agr.g agr.n) ++ agent ;
         } ;
 
 } 

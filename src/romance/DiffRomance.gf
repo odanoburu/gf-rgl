@@ -113,13 +113,20 @@ param
   Case = Nom | Acc | CPrep Prepos ; 
 
 oper
-  Verb = {s : VF => Str ; vtyp : VType ; p : Str} ;
+  Verb = {root : Str ; suff : VF => Str ; vtyp : VType ; p : Str} ;
+
+  useVerb : Verb -> {s : (VF => Str) ; vtyp : VType ; p : Str} ;
+  useVerb v = {
+    s = \\vf => glue v.root (v.suff ! vf) ;
+    vtyp = v.vtyp ;
+    p = v.p
+    } ;
 
   VPAgrType : Type              = Str * Bool ;                                                  ---- originally VPAgr, expensive
   getVPAgr  : Verb -> VPAgrType = \v -> <verbDefaultPart v, partAgr v.vtyp> ;          -- str may be used
   vpAgrSubj : Verb -> VPAgrType = \v -> <verbDefaultPart v, True> ;                  -- str not used but subject instead    ---- VPAgrSubj
-  vpAgrClits : Verb -> AAgr -> VPAgrType = \v,a -> <v.s ! (VPart a.g a.n), False> ;    -- str used from clitic             ---- vpAgrClit 
-  verbDefaultPart : Verb -> Str = \v -> v.s ! (VPart Masc Sg) ;
+  vpAgrClits : Verb -> AAgr -> VPAgrType = \v,a -> <(useVerb v).s ! (VPart a.g a.n), False> ;    -- str used from clitic             ---- vpAgrClit 
+  verbDefaultPart : Verb -> Str = \v -> (useVerb v).s ! (VPart Masc Sg) ;
 
 
   VP : Type = {
@@ -169,5 +176,4 @@ oper
 
   contractInf : Bool -> Bool -> Bool = \_,_ -> False ; -- only True in Ita, by orB
 
-}
-
+} ;

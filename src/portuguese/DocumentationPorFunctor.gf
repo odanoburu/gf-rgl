@@ -151,7 +151,7 @@ oper
   inflVerb : Verb -> Str = \verb ->
      let
        vfin : CommonRomance.VF -> Str = \f ->
-         verb.s ! f ;
+         (useVerb verb).s ! f ;
 
        ttable : TMood -> Str = \tense ->
          frameTable (

@@ -29,7 +29,7 @@ incomplete concrete NounRomance of Noun =
     PPartNP np v2 =
       let agr = complAgr np.a in
       heavyNPpol np.isNeg {
-        s = \\c => (np.s ! c).ton ++ v2.s ! VPart agr.g agr.n ;
+        s = \\c => (np.s ! c).ton ++ (useVerb v2).s ! VPart agr.g agr.n ;
         a = np.a ;
         hasClit = False
       } ;

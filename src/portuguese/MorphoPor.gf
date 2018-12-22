@@ -1,4 +1,4 @@
---# -path=.:../romance:../common:../../prelude
+--# -path=.:../abstract:../romance:../common:../prelude
 
 --1 A Simple Portuguese Resource Morphology
 --

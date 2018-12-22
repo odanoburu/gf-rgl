@@ -1,4 +1,4 @@
---# -path=.:../romance:../common:../abstract:../../prelude
+--# -path=.:../romance:../common:../abstract:../prelude
 
 --1 Portuguese Lexical Paradigms
 --
@@ -379,14 +379,11 @@ oper
 
   special_ppV : V -> Str -> V ;
   -- deviant past participle, e.g. abrir - aberto
-  special_ppV ve pa = {
-    s = table {
-      VPart g n => (adjPreto pa).s ! (genNum2Aform g n) ;
-      p => ve.s ! p
+  special_ppV ve pa = ve ** {
+    suff = table {
+      VPart g n => Predef.drop (Predef.length ve.root) ((adjPreto pa).s ! (genNum2Aform g n)) ;
+      p => ve.suff ! p
       } ;
-    lock_V = <> ;
-    p = ve.p ;
-    vtyp = VHabere
     } ;
 
 

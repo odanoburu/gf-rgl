@@ -44,7 +44,7 @@ concrete IdiomPor of Idiom = CatPor **
              clpr = <vp.clit1,vp.clit2> ; ----e pronArg agr.n agr.p vp.clAcc vp.clDat ;
              obj  = clpr.p2 ++ vp.comp ! agr ++ vp.ext ! RPos ---- pol
            in
-           vp.s.s ! VGer ++ clpr.p1 ++ obj
+           (useVerb vp.s).s ! VGer ++ clpr.p1 ++ obj
         )
         (predV B.estar_V) ;
 
