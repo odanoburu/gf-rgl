@@ -99,6 +99,8 @@ lin
   iFem_Pron = i_Pron ; -- DEFAULT I (masc)
   youFem_Pron = youSg_Pron ; -- DEFAULT you (masc)
   weFem_Pron = we_Pron ;  -- DEFAULT we (masc)
+  weImpol_Pron = we_Pron ; -- DEFAULT we (masc)
+  weImpolFem_Pron = we_Pron ; -- DEFAULT we (masc)
   youPlFem_Pron = youPl_Pron ;  -- DEFAULT you plural (masc)
   theyFem_Pron = they_Pron ;  -- DEFAULT they (masc)
   youPolFem_Pron = youPol_Pron ;  -- DEFAULT you polite (masc)

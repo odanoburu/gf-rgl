@@ -45,6 +45,8 @@ concrete ExtendPor of Extend =
       theyFem_Pron,
       UttAdV,
       UttVPShort,
+      weImpol_Pron,
+      weImpolFem_Pron,
       weFem_Pron,
       WithoutVP,
       youFem_Pron,
@@ -276,6 +278,12 @@ concrete ExtendPor of Extend =
     -- Romance
     iFem_Pron = pronAgr S.i_Pron Fem Sg P1 ;
     weFem_Pron = pronAgr S.we_Pron Fem Pl P1 ;
+    -- [] not good: this works for "a gente" as nominative subject,
+    -- but fallbacks to nós in possessive or non-nominative, and then
+    -- the agreement is off.. the correct would be to say "o carro da
+    -- gente", not "o nosso carro"
+    weImpol_Pron = pronAgr a_gente_Pron Masc Sg P1 ;
+    weImpolFem_Pron = pronAgr a_gente_Pron Fem Sg P1 ;
     youFem_Pron = pronAgr S.youSg_Pron Fem Sg P3 ;
     youPlFem_Pron = pronAgr S.youPl_Pron Fem Pl P3 ;
     youPolPl_Pron = mkPronoun "vós" "vos" "vos" "vós"
@@ -284,5 +292,9 @@ concrete ExtendPor of Extend =
     youPolFem_Pron = pronAgr S.youPol_Pron Fem Sg P2 ;
     youPolPlFem_Pron = pronAgr youPolPl_Pron Fem Pl P2 ;
     theyFem_Pron = mkPronFrom S.they_Pron "elas" "as" "lhes" "elas" Fem Pl P3 ;
+
+  oper
+    a_gente_Pron : Pron ;
+    a_gente_Pron = we_Pron ** pronLin "a gente" "nos" "nos" "a gente" ;
 
 } ;
