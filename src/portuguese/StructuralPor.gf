@@ -105,7 +105,7 @@ concrete StructuralPor of Structural = CatPor **
         s2 = [] ; isNeg = True
       } ;
     no_Utt = ss "não" ;
-    not_Predet = {s = \\a,c => prepCase c ++ "não" ; c = Nom ; a = PNoAg} ;
+    not_Predet = {s = \\a,c => prepCase c ++ "nem" ; c = Nom ; a = PNoAg} ;
     nobody_NP = pn2npNeg (mkPN "ninguém") ;
     nothing_NP = pn2npNeg (mkPN "nada") ;
 
